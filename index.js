@@ -61,6 +61,18 @@ app.delete("/api/persons/:id", (req, res) => {
 
 app.post("/api/persons", (req, res) => {
   const personInfo = req.body;
+  if (!personInfo.name || !personInfo.number) {
+    return res
+      .status(400)
+      .json({ error: "request must include name and number!" });
+  } else {
+    const isNameExist = phoneBook.filter(
+      (info) => info.name === personInfo.name
+    );
+    if (isNameExist.length > 0) {
+      return res.status(400).json({ error: "name must be unique" });
+    }
+  }
   const personInfoObject = {
     id: idGenerator(),
     name: personInfo.name,
