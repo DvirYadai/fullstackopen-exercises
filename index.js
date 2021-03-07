@@ -2,8 +2,13 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 
+morgan.token("type", (req) => {
+  return JSON.stringify(req.body);
+});
 app.use(express.json());
-app.use(morgan("tiny"));
+app.use(
+  morgan(":method :url :status :response-time ms - :res[content-length] :type")
+);
 
 let phoneBook = [
   {
