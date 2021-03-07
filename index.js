@@ -38,13 +38,24 @@ app.get("/info", (req, res) => {
   );
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
+app.get("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
   const personInfo = phoneBook.find((info) => info.id === id);
   if (personInfo) {
-    response.json(personInfo);
+    res.json(personInfo);
   } else {
-    response.status(404).end();
+    res.status(404).end();
+  }
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const personInfo = phoneBook.find((info) => info.id === id);
+  if (personInfo) {
+    phoneBook = phoneBook.filter((info) => info.id !== id);
+    res.status(204).end();
+  } else {
+    res.status(404).end();
   }
 });
 
