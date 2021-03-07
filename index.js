@@ -27,7 +27,15 @@ let phoneBook = [
 ];
 
 app.get("/api/persons", (req, res) => {
-  return res.send(phoneBook);
+  return res.json(phoneBook);
+});
+
+app.get("/info", (req, res) => {
+  return res.send(
+    `<p>Phonebook has info for ${
+      phoneBook.length
+    } people</p><p>${new Date()}</p>`
+  );
 });
 
 const PORT = 3001;
