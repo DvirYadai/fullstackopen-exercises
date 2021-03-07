@@ -59,7 +59,23 @@ app.delete("/api/persons/:id", (req, res) => {
   }
 });
 
+app.post("/api/persons", (req, res) => {
+  const personInfo = req.body;
+  const personInfoObject = {
+    id: idGenerator(),
+    name: personInfo.name,
+    number: personInfo.number,
+  };
+
+  phoneBook = phoneBook.concat(personInfoObject);
+  res.json(personInfoObject);
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+function idGenerator() {
+  return Math.floor(Math.random() * 1000) + 1;
+}
