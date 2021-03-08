@@ -63,15 +63,12 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const personInfo = phoneBook.find((info) => info.id === id);
-  if (personInfo) {
-    phoneBook = phoneBook.filter((info) => info.id !== id);
-    res.status(204).end();
-  } else {
-    res.status(404).end();
-  }
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (req, res) => {
@@ -97,11 +94,19 @@ app.post("/api/persons", (req, res) => {
   });
 });
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-function idGenerator() {
-  return Math.floor(Math.random() * 1000) + 1;
-}
