@@ -88,14 +88,13 @@ app.post("/api/persons", (req, res) => {
       return res.status(400).json({ error: "name must be unique" });
     }
   }
-  const personInfoObject = {
-    id: idGenerator(),
+  const person = new Person({
     name: personInfo.name,
     number: personInfo.number,
-  };
-
-  phoneBook = phoneBook.concat(personInfoObject);
-  res.json(personInfoObject);
+  });
+  person.save().then((result) => {
+    res.json(person);
+  });
 });
 
 const PORT = process.env.PORT || 3001;
