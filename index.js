@@ -71,6 +71,17 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+app.put("/api/persons/:id", (req, res) => {
+  const personInfo = req.body;
+  Person.updateOne({ _id: req.params.id }, { number: personInfo.number })
+    .then(() => {
+      return res.status(200).send("Person info updated successfully");
+    })
+    .catch((err) => {
+      return res.status(500).send(err);
+    });
+});
+
 app.post("/api/persons", (req, res) => {
   const personInfo = req.body;
   if (!personInfo.name || !personInfo.number) {
@@ -78,24 +89,12 @@ app.post("/api/persons", (req, res) => {
       .status(400)
       .json({ error: "request must include name and number!" });
   } else {
-    Person.find({ name: personInfo.name }).then((result) => {
-      if (result.length > 0) {
-        Person.updateOne({ _id: result[0]._id }, { number: personInfo.number })
-          .then((response) => {
-            return res.status(200).send("Person info updated successfully");
-          })
-          .catch((err) => {
-            return res.status(500).send(err);
-          });
-      } else {
-        const person = new Person({
-          name: personInfo.name,
-          number: personInfo.number,
-        });
-        person.save().then((result) => {
-          res.json(person);
-        });
-      }
+    const person = new Person({
+      name: personInfo.name,
+      number: personInfo.number,
+    });
+    person.save().then((result) => {
+      res.json(person);
     });
   }
 });
