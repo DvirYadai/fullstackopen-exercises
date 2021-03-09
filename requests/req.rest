@@ -1,4 +1,8 @@
-DELETE http://localhost:3001/api/persons/60464c64f3fa2525401a997d
+DELETE http://localhost:3001/api/persons/604748ee6751132cbc4f1c6f
+
+###
+
+GET http://localhost:3001/api/persons/60464c83f3fa2525401a997e
 
 ###
 
@@ -15,5 +19,5 @@ content-type: application/json
 
 {
     "name": "dan",
-    "number": "053-8459328"
+    "number": "053-8459228"
 }

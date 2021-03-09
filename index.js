@@ -46,21 +46,24 @@ app.get("/api/persons", (req, res) => {
 });
 
 app.get("/info", (req, res) => {
-  return res.send(
-    `<p>Phonebook has info for ${
-      phoneBook.length
-    } people</p><p>${new Date()}</p>`
-  );
+  Person.find().then((person) => {
+    return res.send(
+      `<p>Phonebook has info for ${
+        person.length
+      } people</p><p>${new Date()}</p>`
+    );
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const personInfo = phoneBook.find((info) => info.id === id);
-  if (personInfo) {
-    res.json(personInfo);
-  } else {
-    res.status(404).end();
-  }
+  const id = req.params.id;
+  Person.findById(id).then((person) => {
+    if (person) {
+      return res.json(person);
+    } else {
+      return req.status(404).end();
+    }
+  });
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
