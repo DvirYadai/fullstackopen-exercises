@@ -78,20 +78,26 @@ app.post("/api/persons", (req, res) => {
       .status(400)
       .json({ error: "request must include name and number!" });
   } else {
-    const isNameExist = phoneBook.filter(
-      (info) => info.name === personInfo.name
-    );
-    if (isNameExist.length > 0) {
-      return res.status(400).json({ error: "name must be unique" });
-    }
+    Person.find({ name: personInfo.name }).then((result) => {
+      if (result.length > 0) {
+        Person.updateOne({ _id: result[0]._id }, { number: personInfo.number })
+          .then((response) => {
+            return res.status(200).send("Person info updated successfully");
+          })
+          .catch((err) => {
+            return res.status(500).send(err);
+          });
+      } else {
+        const person = new Person({
+          name: personInfo.name,
+          number: personInfo.number,
+        });
+        person.save().then((result) => {
+          res.json(person);
+        });
+      }
+    });
   }
-  const person = new Person({
-    name: personInfo.name,
-    number: personInfo.number,
-  });
-  person.save().then((result) => {
-    res.json(person);
-  });
 });
 
 const errorHandler = (error, request, response, next) => {
